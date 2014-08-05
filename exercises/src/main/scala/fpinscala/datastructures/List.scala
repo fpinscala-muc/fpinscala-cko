@@ -58,6 +58,7 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(_, t) => Cons(h, t)
   }
 
+  @annotation.tailrec
   def drop[A](l: List[A], n: Int): List[A] =
     if (n > 0) {
       l match {
@@ -69,9 +70,17 @@ object List { // `List` companion object. Contains functions for creating and wo
       l
     }
 
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = sys.error("todo")
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+    case Nil => Nil
+    case Cons(h, t) if (f(h)) => dropWhile(t, f)
+    case Cons(h, t) =>  l
+  }
 
-  def init[A](l: List[A]): List[A] = sys.error("todo")
+  def init[A](l: List[A]): List[A] = l match {
+    case Nil => sys.error("no list")
+    case Cons(h, Nil) => Nil
+    case Cons(h, t) => append(List(h), init(t))
+  }
 
   def length[A](l: List[A]): Int = l match {
     case Nil => 0
@@ -102,9 +111,25 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def doubleToString(l: List[Double]): List[String] = sys.error("todo")
 
-  def map[A,B](l: List[A])(f: A => B): List[B] = sys.error("todo")
+  def map[A,B](l: List[A])(f: A => B): List[B] = l match {
+    case Nil => Nil
+    case Cons(h, t) =>     
+      append(List(f(h)), map(t)(f))
+  }
 
-  def filter[A](l: List[A])(f: A => Boolean): List[A] = sys.error("todo")
+  def filter[A](l: List[A])(f: A => Boolean): List[A] = l match {
+    case Nil => Nil
+    case Cons(h, Nil) => if (!f(h)) {
+      Nil
+    } else {
+      List(h)
+    }
+    case Cons(h, t) => if (!f(h)) {
+      filter(t) (f)
+    } else {
+      append(List(h), filter(t)(f))
+    }
+  }
 
   def flatMap[A,B](l: List[A])(f: A => List[B]): List[B] = sys.error("todo")
 
@@ -115,4 +140,5 @@ object List { // `List` companion object. Contains functions for creating and wo
   def zipWith[A,B,C](a: List[A], b: List[B])(f: (A,B) => C): List[C] = sys.error("todo")
 
   def hasSubsequence[A](l: List[A], sub: List[A]): Boolean = sys.error("todo")
+  
 }
