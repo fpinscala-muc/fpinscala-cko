@@ -14,6 +14,8 @@
         font-weight: normal;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .left-column { float: left; }
+      .right-column { width: 75%; float: right; padding-top: 1em; }
     </style>
   </head>
   <body>
@@ -49,32 +51,58 @@ class: center, middle
 
 ---
 # Fold
-* A fold is a higher-order function that processes a data structure and produces a return value
-    * Right fold: combining the first element recursively with the result of combining the rest
+* Higher-order function that processes a data structure and produces a value
+* Example: folding the list [1,2,3,4,5] with the + operator
+* Right fold: 1 + (2 + (3 + (4 + 5)))
 
-      ![Right fold](Right-fold-transformation.png)
-    * Left fold: Combining the result of recursively combining all elements but the last one with 
-      the last one 
+      <div class="left-column">
+        <img src="Right-fold-transformation.png" width=250px>
+      </div>
 
-      ![Left fold](Left-fold-transformation.png)
-* An unfold takes a value, applies it to a function and generates a data structure from it
-* Nice explanation in the Haskell wiki: http://www.haskell.org/haskellwiki/Fold
+      ```scala
+      def foldRight[A,B](as: List[A], z: B)(f: (A, B) => B): B = 
+        as match {
+          case Nil => z
+          case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+        }
+      ```
+      <div style="clear:left">
+
+* Left fold: (((1 + 2) + 3) + 4) + 5
+
+      <div class="left-column">
+        <img src="Left-fold-transformation.png" width=250px>
+      </div>
+
+      ```scala
+      def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = 
+        l match {
+          case Nil => z
+          case Cons (x, xs) => foldLeft(xs, f(z, x))(f)
+        }
+      ```
+     <div style="clear:left">
+* Unfold: takes a value, applies it to a function and generates a data structure from it
 
 ---
 # Defining functional data structures in Scala
 ```scala
-sealed trait List[+A]
-case object Nil extends List[Nothing]
-case class Cons[+A](head: A, tail: List[A]) extends List[A]
-
-object List {
-    def sum(ints: List[Int]): Int = ints match {
-        case Nil => 0
-        case Cons(x,xs) => x + sum(xs)
-    }
-}
+1 sealed trait List[+A]
+2 case object Nil extends List[Nothing]
+3 case class Cons[+A](head: A, tail: List[A]) extends List[A]
+4 
+5 object List {
+6    def sum(ints: List[Int]): Int = ints match {
+7        case Nil => 0
+8        case Cons(x,xs) => x + sum(xs)
+9    }
+10 }
 ```
+1) Data types start with keyword "trait"
+2) Nothing is a subtype of every other type
 
+---
+* Nice explanation in the Haskell wiki: http://www.haskell.org/haskellwiki/Fold
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
