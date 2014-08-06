@@ -98,11 +98,17 @@ class: center, middle
 9    }
 10 }
 ```
-1) Data types start with keyword "trait"
-2) Nothing is a subtype of every other type
+1) Declare List data type; parametrized with type A; Data types start with keyword "trait"
+
+2) Data constructor for empty list; Nothing is a subtype of every other type
+
+3) Data constructor for nonempty lists; tail may be Nil or another Cons
+
+5) List companion object. Contains functions for creating and working with lists
 
 ---
-* Nice explanation in the Haskell wiki: http://www.haskell.org/haskellwiki/Fold
+# Sources
+* Fold in the Haskell wiki: http://www.haskell.org/haskellwiki/Fold
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
