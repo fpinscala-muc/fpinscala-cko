@@ -87,13 +87,18 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(_, t) => 1 + length(t)
   }
 
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = sys.error("todo")
+  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = as match {
+    case Nil => z
+    case Cons (x, xs) => foldLeft(xs, f(z, x))(f)
+  }
 
   def sumViaFoldLeft(nums: List[Int]): Int = sys.error("todo")
 
   def productViaFoldLeft(nums: List[Double]): Double = sys.error("todo")
 
-  def lengthViaFoldLeft(l: List[_]): Int = sys.error("todo")
+  def lengthViaFoldLeft(l: List[_]): Int = l match {
+    case Nil =>  0
+  }
 
   def reverse[A](l: List[A]): List[A] = l match {
     case Nil => Nil
