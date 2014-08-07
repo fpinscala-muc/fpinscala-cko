@@ -16,6 +16,7 @@
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
       .left-column { float: left; }
       .right-column { width: 75%; float: right; padding-top: 1em; }
+       #slideshow .slide .content.cols.two .col { width: 48%; }
     </style>
   </head>
   <body>
@@ -25,6 +26,8 @@ class: center, middle
 
 # Chapter 3: Functional Data Structures
 ## Christine Koppelt
+
+???
 
 ---
 
@@ -37,16 +40,60 @@ class: center, middle
 ---
 
 # Pattern Matching
-* Checking a sequence of elements for the presence of a given pattern
+
+* Checking a single element or a sequence of elements for the presence of a given pattern</li>
+
+
+```scala
+def matchTest(x: Any): Any = x match {
+  case 1 => "one"
+  case y: Int => "some Int"
+  case 1 :: xs => "list starting with one"
+  case _ if math.random < 0.5 => "wildcard"
+}
+```
+
+
+```scala
+scala> matchTest(1)
+res1: Any = one
+
+scala> matchTest(42)
+res3: Any = some Int
+
+scala> matchTest(List(1,2,3))
+res4: Any = list starting with one
+
+scala> matchTest("abc")
+res5: Any = wildcard
+
+scala> matchTest("abc")
+scala.MatchError: abc (of class java.lang.String)
+```
+
+???
+
+* First match wins
+* Wildcard _
+* Additional condition possible
+* MatchError if no match
 
 ---
 
 # Algebraic data types (ADT)
-* Composite types: formed by combining other types
-* Examples
-    * Lists
-    * Tuples
-    * Trees
+* Composite types: formed by combining other types e.g. tuples, lists. trees
+* Data type is either the sum or union of its data constructors
+* Sum type: the sum of two types is a type that is either this or that
+```scala
+sealed trait List[+A]
+case object Nil extends List[Nothing] 
+case class Cons[+A](head: A, tail: List[A]) extends List[A]
+```
+
+* Product type: the product of two types is a type that is a container holding both
+```scala
+val p = ("Bob", 42)
+```
 * ADTs are analyzed via pattern matching
 
 ---
@@ -107,8 +154,10 @@ class: center, middle
 5) List companion object. Contains functions for creating and working with lists
 
 ---
-# Sources
-* Fold in the Haskell wiki: http://www.haskell.org/haskellwiki/Fold
+# Further Sources
+* Fold at the Haskell wiki: http://www.haskell.org/haskellwiki/Fold
+* Algebraic data types on Wikipedia: http://en.wikipedia.org/wiki/Algebraic_data_type
+* Presentation about Scala types: http://slides.com/mikolajszabo/scala-types-1#/
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
