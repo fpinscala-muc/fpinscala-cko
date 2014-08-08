@@ -173,5 +173,4 @@ object List { // `List` companion object. Contains functions for creating and wo
   def zipWith[A,B,C](a: List[A], b: List[B])(f: (A,B) => C): List[C] = sys.error("todo")
 
   def hasSubsequence[A](l: List[A], sub: List[A]): Boolean = sys.error("todo")
-  
 }
