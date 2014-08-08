@@ -87,17 +87,35 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(_, t) => 1 + length(t)
   }
 
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = as match {
+  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = l match {
     case Nil => z
     case Cons (x, xs) => foldLeft(xs, f(z, x))(f)
   }
+  
+  def sumViaFoldRight (ints: List[Int]): Int = {
+		 foldRight(ints, 0)((a,b) => a + b)
+  }
+  
+  //use double as return value
+  def sumViaFoldRight2 (ints: List[Int]): Double = {
+		 foldRight(ints, 0.0)((a,b) => a + b)
+  }
+  
+  // use wildcards
+    def sumViaFoldRight3 (ints: List[Int]): Double = {
+		 foldRight(ints, 0.0)(_+_)
+  }
+  
+  def sumViaFoldLeft(nums: List[Int]): Int = {
+    foldLeft(nums, 0)(_ + _)
+  }
 
-  def sumViaFoldLeft(nums: List[Int]): Int = sys.error("todo")
+  def productViaFoldLeft(nums: List[Double]): Double = {
+    foldLeft(nums, 1.0)((_*_))
+  }
 
-  def productViaFoldLeft(nums: List[Double]): Double = sys.error("todo")
-
-  def lengthViaFoldLeft(l: List[_]): Int = l match {
-    case Nil =>  0
+  def lengthViaFoldLeft(l: List[_]): Int =  {
+    foldLeft(l, 0)((a,b) => 1 + a)
   }
 
   def reverse[A](l: List[A]): List[A] = l match {
@@ -106,15 +124,25 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(h, t) => append(reverse(t), List(h))
   }
 
-  def appendViaFoldRight[A](l1: List[A], l2: List[A]): List[A] = sys.error("todo")
+  def appendViaFoldRight[A](l1: List[A], l2: List[A]): List[A] =  {
+    foldRight(l1, l2)(Cons(_,_))
+  }
+  def appendViaFoldLeft[A](a1: List[A], a2: List[A]): List[A] = {
+    foldLeft(reverse(a1), a2)((a,b) =>Cons(b,a))
+  }
 
-  def appendViaFoldLeft[A](a1: List[A], a2: List[A]): List[A] = sys.error("todo")
-
-  def concat[A](l: List[List[A]]): List[A] = sys.error("todo")
+  def concat[A](l: List[List[A]]): List[A] = l match {
+    case Nil => Nil
+    case Cons (list, xs) => append(list, concat(xs))
+  }
 
   def add1[T](nums: List[T])(implicit ev: Numeric[T]): List[T] = sys.error("todo")
 
-  def doubleToString(l: List[Double]): List[String] = sys.error("todo")
+  def doubleToString(l: List[Double]): List[String] = l match {
+    case Nil => Nil
+    case Cons(h, t) =>     
+      append(List(h.toString), doubleToString(t))
+  }
 
   def map[A,B](l: List[A])(f: A => B): List[B] = l match {
     case Nil => Nil
