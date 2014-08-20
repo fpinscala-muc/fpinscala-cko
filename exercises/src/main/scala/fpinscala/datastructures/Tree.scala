@@ -27,12 +27,17 @@ object Tree {
     case Branch(left, right) => Branch(map(left)(f), map(right)(f))
   }
 
-  def fold[A,B](t: Tree[A])(f: A => B)(g: (B,B) => B): B = sys.error("todo")
+  def fold[A,B](t: Tree[A])(f: A => B)(g: (B,B) => B): B = t match {
+    case Leaf(value) => f(value)
+    case Branch(left, right) => g(fold(left)(f)(g), fold(right)(f)(g))
+  }
 
   def sizeViaFold[A](t: Tree[A]): Int = 
     fold(t)(a => 1)(1 + _ + _)
 
-  def maximumViaFold[T](t: Tree[T])(implicit ev: Numeric[T]): T = sys.error("todo")
+  def maximumViaFold[T](t: Tree[T])(implicit ev: Numeric[T]): T = 
+  	fold(t)((value) => value)((a,b) => ev.max(a, b))
 
-  def depthViaFold[A](t: Tree[A]): Int = sys.error("todo")
+  def depthViaFold[A](t: Tree[A]): Int = 
+    fold(t)((value) => 0)((a,b)=> 1 + (a max b))
 }
