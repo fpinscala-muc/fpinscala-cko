@@ -185,7 +185,6 @@ object List { // `List` companion object. Contains functions for creating and wo
     case (Cons(h1,t1), Cons(h2,Nil)) => 
       	if(h1 == h2) {true} else {hasSubsequence(t1, sub)} 
     case (Cons(h1,t1), Cons(h2,t2)) => 
-        if (h1 == h2 && t2 == Nil){return true}
       	if(h1 == h2) {hasSubsequence(t1, t2)} 
       	else {hasSubsequence(t1, sub)}
   }
