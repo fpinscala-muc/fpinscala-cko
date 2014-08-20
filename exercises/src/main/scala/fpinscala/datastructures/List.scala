@@ -162,11 +162,31 @@ object List { // `List` companion object. Contains functions for creating and wo
   def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] = 
     foldLeft(reverse(l), Nil:List[B])((a,b)=> append(f(b), a))
 
-  def filterViaFlatMap[A](l: List[A])(f: A => Boolean): List[A] = sys.error("todo")
+  def filterViaFlatMap[A](l: List[A])(f: A => Boolean): List[A] = 
+    flatMap(l)((a) => if (f(a)) List(a) else Nil)
 
-  def addPairwise(a: List[Int], b: List[Int]): List[Int] = sys.error("todo")
+  def addPairwise(a: List[Int], b: List[Int]): List[Int] = (a,b) match {
+    case (Nil, Nil) => Nil
+    case (Nil, Cons(h,t)) => Nil
+    case (Cons(h,t), Nil) => Nil
+    case (Cons(h1,t1), Cons(h2,t2)) => Cons (h1 + h2, addPairwise(t1, t2))
+  }
 
-  def zipWith[A, B, C](a: List[A], b: List[B])(f: (A, B) => C): List[C] = sys.error("todo")
+  def zipWith[A, B, C](a: List[A], b: List[B])(f: (A, B) => C): List[C] = (a,b) match {
+    case (Nil, Nil) => Nil
+    case (Nil, Cons(h,t)) => Nil
+    case (Cons(h,t), Nil) => Nil
+    case (Cons(h1,t1), Cons(h2,t2)) => Cons (f(h1, h2), zipWith(t1, t2)(f))
+  }
 
-  def hasSubsequence[A](l: List[A], sub: List[A]): Boolean = sys.error("todo")
+  def hasSubsequence[A](l: List[A], sub: List[A]): Boolean = (l,sub) match {
+    case (Nil, _) => false
+    case (l, Nil) => true
+    case (Cons(h1,t1), Cons(h2,Nil)) => 
+      	if(h1 == h2) {true} else {hasSubsequence(t1, sub)} 
+    case (Cons(h1,t1), Cons(h2,t2)) => 
+        if (h1 == h2 && t2 == Nil){return true}
+      	if(h1 == h2) {hasSubsequence(t1, t2)} 
+      	else {hasSubsequence(t1, sub)}
+  }
 }
