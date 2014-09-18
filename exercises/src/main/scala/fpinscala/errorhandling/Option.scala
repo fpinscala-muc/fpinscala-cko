@@ -18,18 +18,31 @@ sealed trait Option[+A] {
     case None => None
     case Some(a) => f(a)
   }
+  
+  def flatMap2[B](f: A => Option[B]): Option[B] = {
+    map(f).getOrElse(None)
+  }
 
   def orElse[B>:A](ob: => Option[B]): Option[B] = this match {
     case None => ob
     case _ => this
+  }
+  
+  def orElse2[B>:A](ob: => Option[B]): Option[B] = {
+    map (Some(_)) getOrElse ob
   }
 
   def filter(f: A => Boolean): Option[A] = this match {
     case Some(a) if f(a) == true => Some(a)
   	case _ => None
   }
+  
+  def filter2(f: A => Boolean): Option[A] =  {
+    flatMap(a => if (f(a)) Some(a) else None)
+  }
 }
 case class Some[+A](get: A) extends Option[A]
+// Singleton
 case object None extends Option[Nothing]
 
 object Option {
@@ -55,14 +68,12 @@ object Option {
     else Some(xs.sum / xs.length)
 
   def variance(xs: Seq[Double]): Option[Double] = {
-    var meanOption: Option[Double] = mean(xs);
-    if (meanOption == None) None
-    else {
-      None
-    }
+      mean(xs) flatMap( m => mean(xs map (x => Math.pow(x - m, 2))))
+   }
+  
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+    a flatMap2(a => b map (b => f(a,b)))
   }
-
-  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = sys.error("todo")
 
   def sequence[A](a: List[Option[A]]): Option[List[A]] = sys.error("todo")
 
