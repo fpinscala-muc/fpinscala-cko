@@ -59,7 +59,10 @@ trait Stream[+A] {
 
   def takeWhileViaFoldRight(p: A => Boolean): Stream[A] = sys.error("todo")
 
-  def headOption: Option[A] = sys.error("todo")
+  def headOption: Option[A] = this match {
+    case Cons(h, t) => Some(h())
+    case _ => None
+  }
 
   def map[B](f: A => B): Stream[B] = sys.error("todo")
 
@@ -100,7 +103,10 @@ object Stream {
       Stream.empty
     }
 
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = f(z) match {
+    case Some((h,s)) => cons(h, unfold(s)(f))
+    case None => Stream.empty
+  }
 
   val fibsViaUnfold: Stream[Int] = {
     Stream.empty
