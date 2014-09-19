@@ -1,6 +1,9 @@
 package fpinscala.laziness
 
 import Stream._
+import scala.collection.mutable.ListBuffer
+import scala.annotation.tailrec
+
 trait Stream[+A] {
 
   def foldRight[B](z: => B)(f: (A, => B) => B): B = // The arrow `=>` in front of the argument type `B` means that the function `f` takes its second argument by name and may choose not to evaluate it.
@@ -18,13 +21,35 @@ trait Stream[+A] {
     case Cons(h, t) => if (f(h())) Some(h()) else t().find(f)
   }
 
-  def toList: List[A] = sys.error("todo")
+  
+  def toList: List[A] = {
+    @tailrec
+    def loop (a: Stream[A], b: List[A]):List[A] = a match {
+      case Cons(h,t) => loop(t(), h() :: b)
+      case _ => b
+    } 
+    loop(this, List.empty).reverse
+  }
 
-  def take(n: Int): Stream[A] = sys.error("todo")
+  def take(n: Int): Stream[A] = this match {
+    case Cons(h,t) if n<= 0 => Stream.empty
+    case Cons(h,t) if n == 1 =>  cons(h(), Stream.empty)
+    case Cons(h,t) => cons(h(), t().take(n-1))
+    case _ => Stream.empty
+  }
 
   def takeViaUnfold(n: Int): Stream[A] = sys.error("todo")
 
-  def drop(n: Int): Stream[A] = sys.error("todo")
+  def drop(n: Int): Stream[A] = {
+    if (n > 0) {
+      this match {
+        case Cons(h, t) => t().drop(n - 1)
+        case _ => Stream.empty
+      }
+    } else {
+      this
+    }
+  }
 
   def takeWhile(p: A => Boolean): Stream[A] = sys.error("todo")
 
@@ -71,15 +96,21 @@ object Stream {
 
   def from(n: Int): Stream[Int] = sys.error("todo")
 
-  val fibs: Stream[Int] = sys.error("todo")
+  val fibs: Stream[Int] = {
+      Stream.empty
+    }
 
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
 
-  val fibsViaUnfold: Stream[Int] = sys.error("todo")
+  val fibsViaUnfold: Stream[Int] = {
+    Stream.empty
+  }
 
   def fromViaUnfold(n: Int): Stream[Int] = sys.error("todo")
 
   def constantViaUnfold[A](a: A): Stream[A] = sys.error("todo")
 
-  val onesViaUnfold: Stream[Int] = sys.error("todo")
+  val onesViaUnfold: Stream[Int] = {
+    Stream.empty
+  }
 }
