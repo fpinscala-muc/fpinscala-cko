@@ -95,7 +95,7 @@ object Stream {
 
   val ones: Stream[Int] = Stream.cons(1, ones)
 
-  def constant[A](a: A): Stream[A] = sys.error("todo")
+  def constant[A](a: A): Stream[A] = Stream.cons(a, constant(a))
 
   def from(n: Int): Stream[Int] = sys.error("todo")
 
@@ -114,9 +114,11 @@ object Stream {
 
   def fromViaUnfold(n: Int): Stream[Int] = sys.error("todo")
 
-  def constantViaUnfold[A](a: A): Stream[A] = sys.error("todo")
+  def constantViaUnfold[A](a: A): Stream[A] = {
+    unfold(a)(a => Some (a, a))
+  }
 
   val onesViaUnfold: Stream[Int] = {
-    Stream.empty
+    unfold(1)(_ => Some(1,1))
   }
 }
