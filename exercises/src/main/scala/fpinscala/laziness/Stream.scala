@@ -38,7 +38,9 @@ trait Stream[+A] {
     case _ => Stream.empty
   }
 
-  def takeViaUnfold(n: Int): Stream[A] = sys.error("todo")
+  def takeViaUnfold(n: Int): Stream[A] = {
+    sys.error("todo")
+  }
 
   def drop(n: Int): Stream[A] = {
     if (n > 0) {
@@ -55,7 +57,9 @@ trait Stream[+A] {
 
   def takeWhileViaUnfold(p: A => Boolean): Stream[A] = sys.error("todo")
 
-  def forAll(p: A => Boolean): Boolean = sys.error("todo")
+  def forAll(p: A => Boolean): Boolean = {
+    foldRight(true)((a,b) => (p(a) && b))
+  }
 
   def takeWhileViaFoldRight(p: A => Boolean): Stream[A] = sys.error("todo")
 
@@ -70,7 +74,9 @@ trait Stream[+A] {
 
   def filter(p: A => Boolean): Stream[A] = sys.error("todo")
 
-  def append[B>:A](other: Stream[B]): Stream[B] = sys.error("todo")
+  def append[B>:A](other: Stream[B]): Stream[B] = {
+    foldRight(other)((a,b) => cons(a, b))
+  }
 
   def flatMap[B](f: A => Stream[B]): Stream[B] = sys.error("todo")
 
