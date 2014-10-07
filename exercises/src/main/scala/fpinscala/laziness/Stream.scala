@@ -59,24 +59,36 @@ trait Stream[+A] {
     case _ => Stream.empty
   }
 
-  def takeWhileViaUnfold(p: A => Boolean): Stream[A] = sys.error("todo")
+  def takeWhileViaUnfold(p: A => Boolean): Stream[A] = {
+    unfold(this){
+      case Cons(h,t) if p(h()) => Some (h(), t())
+      case _ => None
+    }
+  }
 
   def forAll(p: A => Boolean): Boolean = {
     foldRight(true)((a,b) => (p(a) && b))
   }
 
-  def takeWhileViaFoldRight(p: A => Boolean): Stream[A] = sys.error("todo")
+  def takeWhileViaFoldRight(p: A => Boolean): Stream[A] = {
+    foldRight(empty[A])((a,b) => if (p(a)) cons(a,b) else Stream.empty)
+  }
 
   def headOption: Option[A] = this match {
     case Cons(h, t) => Some(h())
     case _ => None
   }
 
-  def map[B](f: A => B): Stream[B] = sys.error("todo")
+  def map[B](f: A => B): Stream[B] = this match {
+    case Cons(h,t) => cons(f(h()), t().map(f))
+    case _ => Stream.empty
+  }
 
   def mapViaUnfold[B](f: A => B): Stream[B] = sys.error("todo")
 
-  def filter(p: A => Boolean): Stream[A] = sys.error("todo")
+  def filter(p: A => Boolean): Stream[A] = {
+    foldRight(empty[A])((a,b) => if (p(a)) cons(a,b) else b)
+  }
 
   def append[B>:A](other: Stream[B]): Stream[B] = {
     foldRight(other)((a,b) => cons(a, b))
