@@ -110,6 +110,8 @@ trait Stream[+A] {
       case _ => None
     }
   }
+  
+  def zipAll[B](s2: Stream[B]): Stream[(Option[A], Option[B])] = sys.error("todo")
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 
