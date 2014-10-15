@@ -110,7 +110,12 @@ trait Stream[+A] {
       case _ => None
     }
   }
+
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
+
+  def tails: Stream[Stream[A]] = sys.error("todo using unfold")
+
+  def scanRight[B](s: B)(f: (A, B) => B): Stream[B] = sys.error("todo")
 }
 case object Empty extends Stream[Nothing]
 case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
@@ -142,6 +147,7 @@ object Stream {
     go(0, 1)
   }
 
+
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = f(z) match {
     case Some((h,s)) => cons(h, unfold(s)(f))
     case None => Stream.empty
@@ -150,6 +156,7 @@ object Stream {
   val fibsViaUnfold: Stream[Int] = {
     unfold((0, 1)){ case (n0, n1) => Some (n0,(n1,n0 + n1))}
   }
+
 
   def fromViaUnfold(n: Int): Stream[Int] = {
     unfold(n)(n => Some (n, n+1))
@@ -162,4 +169,5 @@ object Stream {
   val onesViaUnfold: Stream[Int] = {
     unfold(1)(_ => Some(1,1))
   }
+
 }
