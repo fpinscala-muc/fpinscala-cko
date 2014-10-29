@@ -62,7 +62,7 @@ object Par {
 
   def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = {
     es => {
-      val index = n(es).get()
+      val index = n(es).get
       run(es)(choices(index))
     }
   }
@@ -80,7 +80,7 @@ object Par {
 
   def chooser[A,B](pa: Par[A])(choices: A => Par[B]): Par[B] = {
     es => {
-      val a = pa(es).get()
+      val a = pa(es).get
       run(es)(choices(a))
     }
   }
@@ -95,7 +95,7 @@ object Par {
     
   def flatMap[A,B](pa: Par[A])(f: A => Par[B]): Par[B] = {
      executorService => {
-       val a = run(executorService)(pa).get()
+       val a = run(executorService)(pa).get
        run(executorService)(f(a))
      }
   }
