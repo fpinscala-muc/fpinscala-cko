@@ -88,8 +88,11 @@ object Par {
   def choiceViaChooser[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] = 
     chooser(map(cond)(x => if(x) 0 else 1))(List(t, f))
 
-  def choiceNViaChooser[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = ???
+    
+  def choiceNViaChooser[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = 
+    chooser(n)(choices)
 
+    
   def flatMap[A,B](pa: Par[A])(f: A => Par[B]): Par[B] = {
      executorService => {
        val a = run(executorService)(pa).get()
@@ -97,9 +100,16 @@ object Par {
      }
   }
 
-  def join[A](ppa: Par[Par[A]]): Par[A] = ???
+  def join[A](ppa: Par[Par[A]]): Par[A] = {
+    es => {
+     val parA = ppa(es).get
+     parA(es)
+    }
+  }
+    
 
-  def flatMapViaJoin[A,B](pa: Par[A])(f: A => Par[B]): Par[B] = ???
+  def flatMapViaJoin[A,B](pa: Par[A])(f: A => Par[B]): Par[B] = 
+    join(map(pa)(f))
 
   def joinViaFlatMap[A](ppa: Par[Par[A]]): Par[A] = {
     flatMap(ppa)(x => x)
