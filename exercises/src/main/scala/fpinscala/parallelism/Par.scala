@@ -62,18 +62,31 @@ object Par {
 
   def choiceN[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = {
     es => {
-      val index = run(es)(n).get()
+      val index = n(es).get()
       run(es)(choices(index))
     }
   }
 
-  def choiceViaChoiceN[A](a: Par[Boolean])(ifTrue: Par[A], ifFalse: Par[A]): Par[A] = ???
+  def choiceViaChoiceN[A](a: Par[Boolean])(ifTrue: Par[A], ifFalse: Par[A]): Par[A] = 
+    choiceN(map(a)(x => if (x) 0 else 1))(List(ifTrue, ifFalse))
+    
 
-  def choiceMap[K,V](key: Par[K])(choices: Map[K,Par[V]]): Par[V] = ???
+  def choiceMap[K,V](key: Par[K])(choices: Map[K,Par[V]]): Par[V] = {
+    es => {
+      val k = key(es).get()
+      run(es)(choices(k))
+    }
+  }
 
-  def chooser[A,B](pa: Par[A])(choices: A => Par[B]): Par[B] = ???
+  def chooser[A,B](pa: Par[A])(choices: A => Par[B]): Par[B] = {
+    es => {
+      val a = pa(es).get()
+      run(es)(choices(a))
+    }
+  }
 
-  def choiceViaChooser[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] = ???
+  def choiceViaChooser[A](cond: Par[Boolean])(t: Par[A], f: Par[A]): Par[A] = 
+    chooser(map(cond)(x => if(x) 0 else 1))(List(t, f))
 
   def choiceNViaChooser[A](n: Par[Int])(choices: List[Par[A]]): Par[A] = ???
 
