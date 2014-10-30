@@ -52,7 +52,8 @@ If not done yet the IntelliJ plugin has to be configured, add the following to `
 See also https://github.com/mpeltonen/sbt-idea/
 
 ## In the Beginning - Scala
-* Scala Coding guidelines: http://twitter.github.io/effectivescala/ (see also the Learning Scala links in the Intro section there)
+* [Scala Coding guidelines:](http://twitter.github.io/effectivescala/) (see also the Learning Scala links in the Intro section there)
+* [Scala Best Practices](https://github.com/alexandru/scala-best-practices/)
 
 ## Chapter 1: What is functional programming?
 ### Additional links
@@ -156,11 +157,17 @@ Select[FromDigits/@Partition[First[RealDigits[E,10,1000]],10,1],PrimeQ,1]
 Here is a Java solution: http://google-tale.blogspot.de/2008/07/google-billboard-puzzle.html  
 Can we come up with an elegant (Stream?!) solution in Scala that is somewhere in between Mathematica and Java?
 
+### Chapter 5: Strictness and laziness
+
+#### Additional links
+* On composability of Functors, Applicatives, and Monads: https://speakerdeck.com/larsrh/optimusprimet
+
 ### Misc
 * Interesting talk about types and type inference: https://www.youtube.com/watch?v=fDTt_uo0F-g
 * [Property-based testing with ScalaCheck](http://www.nurkiewicz.com/2014/09/property-based-testing-with-scalacheck.html)
 (although [ScalaTests's docu](http://scalatest.org/user_guide/generator_driven_property_checks) is also quite ok).
 * [Object-Functional Programming – A Beautiful Unification or a Kitchen Sink?](https://speakerdeck.com/missingfaktor/object-functional-programming-a-beautiful-unification-or-a-kitchen-sink)
+* [The Scala Dreaded Underscore](http://de.slideshare.net/normation/scala-dreaded) and the respective [question on stackoverflow](http://stackoverflow.com/questions/8000903/what-are-all-the-uses-of-an-underscore-in-scala)
 
 #### Is Scala too complex?
 * http://lampwww.epfl.ch/~odersky/blogs/isscalacomplex.html
