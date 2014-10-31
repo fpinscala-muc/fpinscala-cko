@@ -100,16 +100,33 @@ object RNG {
     flatMap(s)(a => unit(f(a)))
   }
 
-  def map2ViaFlatMap[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
+  def map2ViaFlatMap[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = {
+    flatMap(ra)(a => map(rb)(b => f(a,b)))
+  }
 }
 
 case class State[S,+A](run: S => (A, S)) {
   def map[B](f: A => B): State[S, B] =
-    sys.error("todo")
+    State(s => {
+      val (a, s2) = run(s)
+      (f(a), s2)
+      }
+    )
+    
   def map2[B,C](sb: State[S, B])(f: (A, B) => C): State[S, C] =
-    sys.error("todo")
+    State(s => {
+      val (a, s2) = run(s)
+      val (b, s3) = sb.run(s2)
+      (f(a,b), s3)
+      }
+    )
+    
   def flatMap[B](f: A => State[S, B]): State[S, B] =
-    sys.error("todo")
+        State(s => {
+          val (a, s1) = run(s)
+          f(a).run(s1)
+      }
+    )
 }
 
 sealed trait Input
