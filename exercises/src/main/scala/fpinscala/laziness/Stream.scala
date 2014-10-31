@@ -121,9 +121,17 @@ trait Stream[+A] {
   }
   
 
-  def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
+  def startsWith[B](s: Stream[B]): Boolean = (this, s) match {
+      case (_, Empty) => true
+      case (Empty,Cons(h2,t2)) => false
+      case (Cons(h1,t1),Cons(h2,t2)) => if (h1() == h2()) t1().startsWith(t2()) else false
+  }
 
-  def tails: Stream[Stream[A]] = sys.error("todo using unfold")
+  def tails: Stream[Stream[A]] = 
+      unfold(this){
+      	case Empty => None
+      	case s => Some((s, s drop 1))
+      } append (Stream(empty))
 
   def scanRight[B](s: B)(f: (A, B) => B): Stream[B] = sys.error("todo")
 }
