@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chapter 3: Functional Data Structures</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .left-column { float: left; }
+      .right-column { width: 75%; float: right; padding-top: 1em; }
+       #slideshow .slide .content.cols.two .col { width: 48%; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Chapter 8: Property-based testing
+## Christine Koppelt
+
+???
+
+---
+class: center, middle
+
+# What is Property-based testing?
+### Specify the behavior of a test
+### Specify the generation of testdata
+### Automatically run the test multiple times with generated test data
+
+???
+* two separate steps
+* testdata:  that are conform to the specification 
+---
+
+# Example: ScalaCheck (1)
+```bash
+> cd fpinscala-cko
+> ./sbt
+> project exercises
+> compile
+> test:console
+```
+
+???
+
+Goal: Scala Repl
+
+---
+
+
+# Example: ScalaCheck(2)
+
+```scala
+import org.scalacheck.Gen
+import org.scalacheck.Prop
+
+val intList = Gen.listOf(Gen.choose(0,100))
+intList.sample
+val prop = Prop.forAll(intList)(ns => ns.reverse.reverse == ns)
+prop.check
+
+val prop2 = Prop.forAll(intList)(ns => ns.reverse == ns)
+prop.check
+```
+
+---
+class: center, middle
+
+# Exercise 8.1
+
+???
+
+---
+
+# Next: Writing your own library by reverse-engineering ScalaCheck
+
+```scala
+def listOf[A](a: Gen[A]): Gen[List[A]]
+```
+
+```scala
+case class Gen[A](sample: State[RNG,A])
+```
+
+```scala
+def forAll[A](a: Gen[A])(f: A => Boolean): Prop
+```
+
+```scala
+trait Prop {
+def check: Either[(FailedCase, SuccessCount), SuccessCount]
+}
+```
+
+???
+listOf
+- generates values of type A
+- parametric that means not for a specific type
+- size not specified
+
+
+Prop
+&&: from an example in the book
+check method has a side effect of printing to the console
+missing informations: How many Testcases to examine before property is considered to have passed?
+- None: all test cases succeeded, some will indicate failure, usually None means error
+
+---
+# More concrete implementations
+
+```scala
+case class Prop(run: (TestCases,RNG) => Result)
+```
+
+```scala
+def forAll[A](as: Gen[A])(f: A => Boolean): Prop = Prop {
+ (n,rng) => randomStream(as)(rng).zip(Stream.from(0)).take(n).map {
+   case (a, i) => try {
+      if (f(a)) Passed else Falsified(a.toString, i)
+   } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
+ }.find(_.isFalsified).getOrElse(Passed)
+}
+
+def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
+  Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
+def buildMsg[A](s: A, e: Exception): String =
+  s"test case: $s\n" +
+  s"generated an exception: ${e.getMessage}\n" +
+  s"stack trace:\n ${e.getStackTrace.mkString("\n")}"
+```
+
+???
+
+A stream of pairs (a, i) where a is a random
+value and i is its index in the stream.
+
+When a test fails, record
+the failed case and its index
+so we know how many
+tests succeeded before it.
+
+If a test case generates an exception, record it in
+the result.
+
+Generates an infinite stream of A values by
+repeatedly sampling a generator.
+
+String interpolation syntax. A string starting with s" can
+refer to a Scala value v as $v or ${v} in the string. The
+Scala compiler will expand this to v.toString .
+
+    </textarea>
+    <script src="remark-latest.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>

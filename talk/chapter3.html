@@ -30,13 +30,65 @@ class: center, middle
 ???
 
 ---
+class: center, middle
 
-# Characteristics of functional data structures
-* immutable 
-    * excludes updates of entities
-    * no need for locking => simplifies concurrency
-    * can be shared => combine and reuse existing objects
+# Main Characteristic of functional data structures
+## They are immutable 
+
+???
+* excludes updates of entities
+* no need for locking => simplifies concurrency
+* can be shared => combine and reuse existing objects
     
+---
+
+# Defining functional data structures in Scala
+```scala
+1 sealed trait List[+A]
+2 case object Nil extends List[Nothing]
+3 case class Cons[+A](head: A, tail: List[A]) extends List[A]
+4 
+5 object List {
+6    def sum(ints: List[Int]): Int = ints match {
+7        case Nil => 0
+8        case Cons(x,xs) => x + sum(xs)
+9    }
+10 }
+```
+1) Declare List data type; parametrized with type A; Data types start with keyword "trait"
+
+2) Data constructor for empty list; Nothing is a subtype of every other type
+
+3) Data constructor for nonempty lists; tail may be Nil or another Cons
+
+5) List companion object. Contains functions for creating and working with lists
+
+???
+
+sealed:  can be extended only in the same file as its declaration.
+companion: an object with the same name as the
+data type (in this case List ) where we put various convenience
+functions for creating or working with values of the data type.
+
+---
+
+
+# Algebraic data types (ADT)
+* Composite types: formed by combining other types e.g. tuples, lists. trees
+* Data type is either the sum or union of its data constructors
+* Sum type: the sum of two types is a type that is either this or that
+```scala
+sealed trait List[+A]
+case object Nil extends List[Nothing] 
+case class Cons[+A](head: A, tail: List[A]) extends List[A]
+```
+
+* Product type: the product of two types is a type that is a container holding both
+```scala
+val p = ("Bob", 42)
+```
+* ADTs are analyzed via pattern matching
+
 ---
 
 # Pattern Matching
@@ -79,24 +131,6 @@ scala.MatchError: abc (of class java.lang.String)
 * MatchError if no match
 
 ---
-
-# Algebraic data types (ADT)
-* Composite types: formed by combining other types e.g. tuples, lists. trees
-* Data type is either the sum or union of its data constructors
-* Sum type: the sum of two types is a type that is either this or that
-```scala
-sealed trait List[+A]
-case object Nil extends List[Nothing] 
-case class Cons[+A](head: A, tail: List[A]) extends List[A]
-```
-
-* Product type: the product of two types is a type that is a container holding both
-```scala
-val p = ("Bob", 42)
-```
-* ADTs are analyzed via pattern matching
-
----
 # Fold
 * Higher-order function that processes a data structure and produces a value
 * Example: folding the list [1,2,3,4,5] with the + operator
@@ -130,28 +164,6 @@ val p = ("Bob", 42)
       ```
      <div style="clear:left">
 * Unfold: takes a value, applies it to a function and generates a data structure from it
-
----
-# Defining functional data structures in Scala
-```scala
-1 sealed trait List[+A]
-2 case object Nil extends List[Nothing]
-3 case class Cons[+A](head: A, tail: List[A]) extends List[A]
-4 
-5 object List {
-6    def sum(ints: List[Int]): Int = ints match {
-7        case Nil => 0
-8        case Cons(x,xs) => x + sum(xs)
-9    }
-10 }
-```
-1) Declare List data type; parametrized with type A; Data types start with keyword "trait"
-
-2) Data constructor for empty list; Nothing is a subtype of every other type
-
-3) Data constructor for nonempty lists; tail may be Nil or another Cons
-
-5) List companion object. Contains functions for creating and working with lists
 
 ---
 # Further Sources
