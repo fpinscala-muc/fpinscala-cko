@@ -30,6 +30,19 @@ class: center, middle
 ???
 
 ---
+# Repetition
+
+* Property-based testing
+    * Specify the behavior of a test
+    * Specify the generation of testdata
+    * Framework runs the test multiple times with generated test data
+
+* ScalaCheck
+    * Gen: Generators
+    * Prop: Properties
+
+
+---
 
 # Test case minimization
 * Find the smallest or simplest failing test case
@@ -52,7 +65,7 @@ scala> p1.check
 
 ```
 
-* But it don't have to be used
+* But it don't has to be used
 
 ```scala
 scala> val p1 = forAllNoShrink(arbitrary[List[Int]])(l => l == l.distinct)
@@ -63,6 +76,21 @@ scala> p1.check
 ```
 
 * Custom shrinking methods can also be defined
+
+---
+
+class: center, middle
+
+# Exercise: Implement sized generator
+
+---
+
+# Improve Prop and Gen
+
+---
+
+# Testing parallel functions
+
 
 
     </textarea>
