@@ -82,11 +82,12 @@ scala> p1.check
 class: center, middle
 
 # Exercise 8.11: 
-### Define some convenience functions on SGen that simply delegate to the corresponding functions on Gen.
+### Define some convenience functions on SGen that delegate to the corresponding functions on Gen.
 
 ---
 
-# Improve Prop and Gen
+# Exercise 8.13
+Define listOf1 for generating nonempty lists.
 
 ---
 
@@ -98,7 +99,15 @@ class: center, middle
 
 * Problem: So far generators don't generate functions
     * Option 1: Only examine particular arguments
+```scala
+val isEven = (i: Int) => i%2 == 0
+Prop.forAll(Gen.listOf(int))(ns => ns.takeWhile(isEven).forall(isEven))
+```
     * Option 2: Use constant functions
+```scala
+def genStringIntFn(g: Gen[Int]): Gen[String => Int] =
+g map (i => (s => i))
+```
     * Option 3: Exercise 8.19: Generate a parametrized function
 
 
