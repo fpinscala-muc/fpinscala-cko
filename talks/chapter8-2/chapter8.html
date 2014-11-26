@@ -38,8 +38,8 @@ class: center, middle
     * Framework runs the test multiple times with generated test data
 
 * ScalaCheck
-    * Gen: Generators
-    * Prop: Properties
+    * Gen: Generators for test data, also defines operations like map and filter
+    * Prop: Methods for handling properties. A property specifies the behaviour of a method.
 
 
 ---
@@ -81,7 +81,8 @@ scala> p1.check
 
 class: center, middle
 
-# Exercise: Implement sized generator
+# Exercise 8.11: 
+### Define some convenience functions on SGen that simply delegate to the corresponding functions on Gen.
 
 ---
 
@@ -91,6 +92,14 @@ class: center, middle
 
 # Testing parallel functions
 
+---
+
+# Testing higher-order functions
+
+* Problem: So far generators don't generate functions
+    * Option 1: Only examine particular arguments
+    * Option 2: Use constant functions
+    * Option 3: Exercise 8.19: Generate a parametrized function
 
 
     </textarea>
